@@ -1,0 +1,7 @@
+AuthName "dochadzka.diago.sk statistics"
+AuthType Basic
+AuthUserFile /home/diago/domains/dochadzka.diago.sk/.stats-htpasswd
+require valid-user
+<Files .stats-htpasswd>
+deny from all
+</Files>
