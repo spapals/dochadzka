@@ -16,7 +16,7 @@ if (!$m) {
             <span class="heading">Admin menu</span>
             <li><a href="<?= $url; ?>last_action"> <i class="fad fa-undo-alt fa-fw"></i> Posledné udalosti</a></li>
             <li><a href="<?= $url; ?>zamestnanci"> <i class="fad fa-users fa-fw"></i> Zamestnanci</a></li>
-            <li><a href="<?= $url; ?>requests"> <i class="fad fa-clipboard-check fa-fw"></i> Schvaľovanie</a></li>
+            <li><a href="<?= $url; ?>requests/0/1"> <i class="fad fa-clipboard-check fa-fw"></i> Schvaľovanie</a></li>
         <? }?>
         <? if($_SESSION['id']==150){ ?>
         <li><a href="<?= $url; ?>import"> <i class="fad fa-upload fa-fw"></i> Import</a></li>

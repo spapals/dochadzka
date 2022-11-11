@@ -383,11 +383,21 @@ function get_alerts($status)
     return $alerts;
 }
 
-function requests($status, $order)
+function requests($status, $order, $page=0)
+{
+    $limit = 20;
+    $offset = ($limit * $page) - $limit;
+
+    global $database;
+    $requests = $database->select("requests", "*", ["status" => $status, "ORDER" => ["added" => $order], "LIMIT" => [$offset, $limit]]);
+    return $requests;
+}
+
+function count_requests($status)
 {
     global $database;
-    $requests = $database->select("requests", "*", ["status" => $status], ["ORDER" => ["added" => $order]]);
-    return $requests;
+    $count = $database->count("requests", ["status" => $status]);
+    return ceil($count / 20);
 }
 
 function limit($iterable, $limit)
@@ -529,6 +539,24 @@ function svk($str)
     $a = array('May', 'Jun', 'Jul', 'Oct');
     $b = array('Máj', 'Jún', 'Júl', 'Okt');
     return str_replace($a, $b, $str);
+}
+
+function is_today($id, $type)
+{
+    global $database;
+
+    $last_action = $database->get("attendance_test", [
+        "start", "end", "day", "month", "year", "timestamp"
+    ], [
+        "id" => $id,
+        "type" => $type,
+        "ORDER" => [
+            "timestamp" => "DESC"
+        ],
+    ]);
+    $today = strtotime(date('Y-m-d'));
+    $date = strtotime($last_action['year'] . '-' . $last_action['month'] . '-' . $last_action['day']);
+    return $today == $date;
 }
 
 function sendMessage($id, $status)
@@ -738,10 +766,13 @@ function att_alert($id, $type)
             }
         }
     }
+    $today = strtotime(date('Y-m-d'));
+    $action_time = strtotime($rows[0]['year'] . '-' . $rows[0]['month'] . '-' . $rows[0]['day']);
+    $is_today = $today == $action_time ? true : false;
     if ($type) {
         $t = $type;
         if ($t == 'H') {
-            if ($s == '-') {
+            if ($s == '-' || !$is_today) {
                 $title = 'Vitajte!';
             } else {
                 $title = 'Dovidenia!';
@@ -951,6 +982,10 @@ function add_attendance($post)
             mysqli_query(db(), $sql) or die("Error: " . mysqli_error(db()));
         }
     } else {
+        if ($type === 'D' || $type === 'CH') {
+            $h = '8';
+            $oh = '08h 00m';
+        }
         $sql = "INSERT INTO `attendance_test`(`id`, `type`, `start`, `end`, `day`, `month`, `year`, `hours`,`hours_full`, `note`, `timestamp`) VALUES ('$id','$type','$from','$to','$day','$month','$year','$h','$oh','$note',now()) ";
         mysqli_query(db(), $sql) or die("Error: " . mysqli_error(db()));
     }
@@ -1181,5 +1216,6 @@ function short_month($month)
     );
     return $months[$month];
 }
+
 
 

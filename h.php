@@ -4,6 +4,9 @@ ini_set('display_errors', FALSE);
 require_once 'functions.php';
 $m = (!$m) ? $m = date('m') : $_GET['m'];
 $mo = date('m');
+
+var_dump(ttest(150, 'H'));
+die();
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +66,9 @@ $mo = date('m');
                                         foreach ($att as $g) {
                                             $tip = $g['note'] ? ' <i class="fad fa-info-circle" data-toggle="tooltip" data-placement="top" title="' . $g['note'] . '"></i>' : '';
                                             $b = ($count % 2 == 1) ? ('bg-secondary') : ('bg-light');
-                                            if ($date != today() && $g['hours'] < 0.15) {$b = 'bg-danger';}
+                                            if ($date != today() && $g['hours'] < 0.15) {
+                                                $b = 'bg-danger';
+                                            }
                                             $t = $g['type'];
                                             echo '<td class="' . $b . '">' . $g['start'] . '</td>';
                                             echo '<td class="' . $b . '">' . $g['end'] . '</td>';
@@ -78,9 +83,9 @@ $mo = date('m');
                                         foreach ($att as $g) {
                                             $h = $g['hours'];
                                             $t = $g['type'];
-                                            ($t == 'O'|| $t == 'OA') ? ($h_spolu -= $h) : ($h_spolu += $h);
+                                            ($t == 'O' || $t == 'OA') ? ($h_spolu -= $h) : ($h_spolu += $h);
                                             ($t == 'SU' || $t == 'SC' || $t == 'SC1' || $t == 'SO') ? ($h_spolu -= $h) : ('');
-                                            ($t == 'O'|| $t == 'OA') ? ($o += $h) : ('');
+                                            ($t == 'O' || $t == 'OA') ? ($o += $h) : ('');
                                             ($t == 'L') ? ($l += $h) : ('');
                                             ($t == 'D') ? ($dov += $h) : ('');
                                             ($t == 'CH') ? ($ch += $h) : ('');

@@ -14,7 +14,7 @@ RewriteCond %{REQUEST_FILENAME} !-l
 #RewriteRule ^zamestnanci/(.+?)/?$ /zamestnanci.php?id=$1 [L,QSA]
 RewriteRule ^hodiny/(.+?)/?/(.+?)/?$ /hodiny.php?m=$1&y=$2 [L,QSA]
 RewriteRule ^hodiny-edit/(.+?)/?$ /hodiny-edit.php?id=$1 [L,QSA]
-RewriteRule ^requests/(.+?)/?$ /requests.php?s=$1 [L,QSA]
+RewriteRule ^requests/(.+?)/?/(.+?)/?$ /requests.php?s=$1&p=$2 [L,QSA]
 RewriteRule ^user-edit/(.+?)/?$ /user-edit.php?id=$1 [L,QSA]
 RewriteRule ^zamestnanci/(.+?)/?/(.+?)/?/(.+?)/?$ /zamestnanci.php?id=$1&m=$2&y=$3 [L,QSA]
 RewriteRule ^([^\.]+)$ $1.php [NC,L]

@@ -3,9 +3,16 @@ require_once 'functions.php';
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 ini_set('display_errors', FALSE);
 $s = $_GET['s'];
+$page = $_GET['p'];
 if (!$s) {
     $s = '0';
 }
+if (!$p) {
+    $p = '0';
+}
+$prev = $page - 1;
+$next = $page + 1;
+$totalPages = count_requests($s);
 ?>
 <!DOCTYPE html>
 <html>
@@ -51,9 +58,9 @@ if (!$_SESSION['is_admin']) {
                             }
                             ?>
                             <div class="mb-2">
-                                <a href="<?= $url ?>requests" role="button" class="btn btn-warning btn-sm">Čakajúce <span class="badge badge-light"><?= alerts(0) ?></span></a>
-                                <a href="<?= $url; ?>requests/1" role="button" class="btn btn-success btn-sm">Schválené <span class="badge badge-light"><?= alerts(1) ?></span></a>
-                                <a href="<?= $url; ?>requests/2" role="button" class="btn btn-danger btn-sm">Neschválené <span class="badge badge-light"><?= alerts(2) ?></span></a>
+                                <a href="<?= $url ?>requests/0/1" role="button" class="btn btn-warning btn-sm">Čakajúce <span class="badge badge-light"><?= alerts(0) ?></span></a>
+                                <a href="<?= $url; ?>requests/1/1" role="button" class="btn btn-success btn-sm">Schválené <span class="badge badge-light"><?= alerts(1) ?></span></a>
+                                <a href="<?= $url; ?>requests/2/1"/ role="button" class="btn btn-danger btn-sm">Neschválené <span class="badge badge-light"><?= alerts(2) ?></span></a>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-sm requests-table">
@@ -70,7 +77,7 @@ if (!$_SESSION['is_admin']) {
                                     <tbody>
                                     <?
                                     $ord = $s == '0' ? 'ASC' : 'DESC';
-                                    foreach (requests($s, $ord) as $req) {
+                                    foreach (requests($s, $ord, $page) as $req) {
                                         $id = $req['uid'];
                                         $type = $req['type'];
                                         $tip = $req['note'] ? ' <i class="fad fa-info-circle" data-toggle="tooltip" data-placement="top" title="' . $req['note'] . '"></i>' : '';
@@ -100,6 +107,26 @@ if (!$_SESSION['is_admin']) {
                                     ?>
                                     </tbody>
                                 </table>
+                                <nav aria-label="Page navigation example mt-5">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
+                                            <a class="page-link"
+                                               href="<?php if($page <= 1){ echo '#'; } else { echo $prev; } ?>">Predch.</a>
+                                        </li>
+                                        <?php for($i = 1; $i <= $totalPages; $i++ ): ?>
+                                            <?php if($page < $i+4 && $page > $i-4) { ?>
+                                                <li class="page-item <?php if($page == $i) {echo 'active'; } ?>">
+                                                    <a class="page-link" href="<?= $i; ?>"> <?= $i; ?> </a>
+                                                </li>
+                                            <? } ?>
+
+                                        <?php endfor; ?>
+                                        <li class="page-item <?php if($page >= $totalPages) { echo 'disabled'; } ?>">
+                                            <a class="page-link"
+                                               href="<?php if($page >= $totalPages){ echo '#'; } else {echo $next; } ?>">Ďalšie</a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>
@@ -111,4 +138,3 @@ if (!$_SESSION['is_admin']) {
 <? require_once __DIR__ . '/inc/footer.php'; ?>
 </body>
 </html>
-
